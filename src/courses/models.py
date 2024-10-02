@@ -1,11 +1,12 @@
 import uuid
+import helpers._cloudinary as _cloudinary
 import helpers
 from django.db import models
 from cloudinary.models import CloudinaryField
 from django.utils.text import slugify
 
 # Initialize Cloudinary
-helpers.cloudinary_init()
+_cloudinary.cloudinary_init()
 
 
 # Choices for Access Requirement and Publish Status
@@ -27,10 +28,19 @@ def handle_upload(instance, filename):
 
 # Generate public ID prefix for Cloudinary fields
 def get_public_id_prefix(instance, *args, **kwargs):
+    if hasattr(instance, "path"):
+        path = instance.path.strip("/")
+        return path
+
     public_id = instance.public_id
+    model_class = instance.__class__
+    model_name = model_class.__name__
+    model_name_slug = slugify(model_name)
+
     if not public_id:
-        return "courses"
-    return "Courses Uploaded"
+        return model_name_slug.strip()
+
+    return f"{model_name_slug}/{public_id}".strip()
 
 
 # Generate unique public ID for a course
@@ -45,7 +55,19 @@ def generate_public_id(instance, *args, **kwargs):
 
 # Get display name for Cloudinary uploads
 def get_display_name(instance, *args, **kwargs):
-    return instance.title or "Course Upload"
+    if hasattr(instance, "get_display_name"):
+        return instance.get_display_name()
+    elif hasattr(instance, "title"):
+        return instance.title
+
+    model_class = instance.__class__
+    model_name = model_class.__name__
+    return f"{model_name} Upload"
+
+
+#  get_thumbnail_display_name = lambda instance: get_display_name(
+#     instance, is_thumbnail=True
+# )
 
 
 # Course Model
@@ -76,37 +98,45 @@ class Course(models.Model):
             self.public_id = generate_public_id(self)
         super().save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return self.path
+
+    @property
+    def path(self):
+        return f"/courses/{self.public_id}"
+
+    def get_display_name(self):
+        return f"{self.title}  -- Course"
+
     # Check if course is published
     @property
     def is_published(self):
         return self.status == PublishStatus.PUBLISHED
-
-    # Generate admin URL for course image with Cloudinary
-    @property
-    def image_admin_url(self):
-        if not self.image:
-            return ""
-        image_options = {"width": 200}
-        return self.image.build_url(**image_options)
-
-    # Return course image detail URL or HTML, with customizable width
-    @property
-    def git_image_detail(self, as_html=False, width=750):
-        if not self.image:
-            return ""
-        image_options = {"width": width}
-        if as_html:
-            return self.image.image(**image_options)
-        return self.image.build_url(**image_options)
 
 
 # Lesson Model
 class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     title = models.CharField(max_length=120)
+    public_id = models.CharField(max_length=110, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
-    thumbnail = CloudinaryField("image", blank=True, null=True)
-    video = CloudinaryField("video", blank=True, null=True, resource_type="video")
+    thumbnail = CloudinaryField(
+        "image",
+        public_id_prefix=get_public_id_prefix,
+        display_name=get_display_name,
+        tags=["image", "thumbnail", "lesson"],
+        blank=True,
+        null=True,
+    )
+    video = CloudinaryField(
+        "video",
+        public_id_prefix=get_public_id_prefix,
+        display_name=get_display_name,
+        tags=["video", "thumbnail", "lesson"],
+        blank=True,
+        null=True,
+        resource_type="video",
+    )
     order = models.IntegerField(default=0)
     can_preview = models.BooleanField(
         default=False,
@@ -127,3 +157,13 @@ class Lesson(models.Model):
         if not self.public_id:
             self.public_id = generate_public_id(self)
         super().save(*args, **kwargs)
+
+    @property
+    def path(self):
+        course_path = self.course.path
+        if course_path.endswith("/"):
+            course_path = course_path[:-1]
+        return f"{course_path}/courses/{self.public_id}"
+
+    def get_display_name(self):
+        return f"{self.title}  - {self.course.get_display_name}"
