@@ -57,7 +57,9 @@ ROOT_URLCONF = "app.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [TEMPLATE_DIR,],
+        "DIRS": [
+            TEMPLATE_DIR,
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -126,3 +128,14 @@ MEDIA_ROOT = LOCAL_CDN / "media"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+import os
+from decouple import config
+
+CLOUDINARY_CLOUD_NAME = config("CLOUDINARY_CLOUD_NAME", default="your_cloud_name")
+CLOUDINARY_PUBLIC_API_KEY = config(
+    "CLOUDINARY_PUBLIC_API_KEY", default="your_public_api_key"
+)
+CLOUDINARY_SECRET_API_KEY = config(
+    "CLOUDINARY_SECRET_API_KEY", default="your_secret_api_key"
+)

@@ -1,3 +1,32 @@
-<video controls autoplay data-cloud-name="{{cloud_name}}">
-  <source src="{{ video_url }}" />
-</video>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-video-player/2.1.0/cld-video-player.min.css"
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-video-player/2.1.0/cld-video-player.min.js"
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
+<video
+  id="demo-player"
+  controls
+  autoplay
+  data-video-url="{{ video_url }}"
+  data-cloud-name="{{cloud_name}}"
+></video>
+
+<script>
+  const videoPlayerId = "demo-player";
+
+  const videoPlayerElement = document.getElementById(videoPlayerId);
+  if (videoPlayerElement) {
+    const videoUrl = videoPlayerElement.dataset.videoUrl;
+    const cloudName = videoPlayerElement.dataset.cloudName;
+    const cld = cloudinary.videoPlayer(videoPlayerId, {
+      cloudName: cloudName,
+    });
+    cld.source(videoUrl);
+  }
+</script>
