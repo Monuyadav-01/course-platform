@@ -1,6 +1,8 @@
 from django import forms
-from .models import Email, EmailVarificationEvent
-from . import css, services
+from .models import Email
+
+# from .models import Email, EmailVerificationEvent
+from . import css
 
 
 class EmailForm(forms.Form):
@@ -9,11 +11,19 @@ class EmailForm(forms.Form):
             attrs={
                 "id": "email-login-input",
                 "class": css.EMAIL_FIELD_CSS,
-                "placeholder": "your email login",
+                "placeholder": "Enter your email",
             }
         )
     )
 
-    class Meta:
-        model = EmailVarificationEvent
-        fields = ["email"]
+    # class Meta:
+    #     model = EmailVerificationEvent
+    #     fields = ["email"]
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        qs = Email.objects.filter(email=email, active=False)
+        print(qs)
+        if not email.endswith("gmail.com"):
+            raise forms.ValidationError("Invalid email , Please try again")
+        return email

@@ -4,13 +4,13 @@ from django.db import models
 # Create your models here.
 class Email(models.Model):
     email = models.EmailField(unique=True)
+    active = models.BooleanField(default=True)
     timestamps = models.DateTimeField(auto_now_add=True)
 
 
-class EmailVarificationEvent(models.Model):
+class EmailVerificationEvent(models.Model):
     parent = models.ForeignKey(Email, on_delete=models.SET_NULL, null=True)
     email = models.EmailField()
-    # Token
 
     expired = models.BooleanField(default=False)
     expired_at = models.DateTimeField(
