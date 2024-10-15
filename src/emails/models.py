@@ -1,4 +1,6 @@
 from django.db import models
+import uuid
+from django.conf import settings
 
 
 # Create your models here.
@@ -16,6 +18,7 @@ class EmailVerificationEvent(models.Model):
     expired_at = models.DateTimeField(
         auto_now_add=False, auto_now=False, blank=True, null=True
     )
+    token = models.UUIDField(default=uuid.uuid1)
     attempts = models.IntegerField(default=0)
     expired = models.BooleanField(default=False)
     attempts = models.IntegerField(default=0)
@@ -26,3 +29,6 @@ class EmailVerificationEvent(models.Model):
         auto_now_add=False, auto_now=False, blank=True, null=True
     )
     timestamps = models.DateTimeField(auto_now_add=True)
+
+    def get_link(self):
+        return f"{settings.BASE_URL}/verify/{self.token}"
