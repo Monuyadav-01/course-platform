@@ -1,8 +1,5 @@
 from django import forms
-from .models import Email
-
-# from .models import Email, EmailVerificationEvent
-from . import css
+from . import css, services
 
 
 class EmailForm(forms.Form):
@@ -22,8 +19,7 @@ class EmailForm(forms.Form):
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
-        qs = Email.objects.filter(email=email, active=False)
-        print(qs)
-        if not email.endswith("gmail.com"):
+        verified = services.verify_email(email)
+        if verified:
             raise forms.ValidationError("Invalid email , Please try again")
         return email
