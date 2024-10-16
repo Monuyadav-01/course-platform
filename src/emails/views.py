@@ -9,6 +9,8 @@ from .forms import EmailForm
 EMAIL_ADDRESS = settings.EMAIL_ADDRESS
 
 
+
+
 def logout_btn_hx_view(request):
     if not request.htmx:
         return redirect("/")
@@ -48,7 +50,7 @@ def email_token_login_view(request):
     return render(request, template_name, context)
 
 
-def verify_email_token(request, token, *args, **kwargs):
+def verify_email_token_view(request, token, *args, **kwargs):
     did_verify, msg, email_obj = services.verify_token(token)
     if not did_verify:
         try:
