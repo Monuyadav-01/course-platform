@@ -17,4 +17,9 @@ def verify_email_token(request, token, *args, **kwargs):
     messages.success(request, msg)
     # django -> request.session.get('email_id')
     request.session["email_id"] = f"{email_obj.id}"
-    return redirect("/")
+    next_url = request.session.get("next_url") or "/"
+
+    if not next_url.startswith("/"):
+        next_url = "/"
+
+    return redirect(next_url)
