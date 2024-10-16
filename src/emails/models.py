@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from django.conf import settings
+from courses.models import Course
 
 
 # Create your models here.
@@ -8,6 +9,11 @@ class Email(models.Model):
     email = models.EmailField(unique=True)
     active = models.BooleanField(default=True)
     timestamps = models.DateTimeField(auto_now_add=True)
+
+
+class Purchase(models.Model):
+    email = models.ForeignKey(Email, on_delete=models.SET_NULL, null=True)
+    course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True)
 
 
 class EmailVerificationEvent(models.Model):
