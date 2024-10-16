@@ -69,6 +69,9 @@ INSTALLED_APPS = [
     "courses",
     "emails",
     "django_htmx",
+    "tailwind",
+    "theme",
+    "django_browser_reload",
 ]
 
 MIDDLEWARE = [
@@ -80,6 +83,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 ROOT_URLCONF = "app.urls"
@@ -153,6 +157,12 @@ USE_TZ = True
 STATIC_URL = "static/"
 MEDIA_URL = "media/"
 MEDIA_ROOT = LOCAL_CDN / "media"
+TAILWIND_APP_NAME = "theme"
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+NPM_BIN_PATH = "/snap/bin/npm"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

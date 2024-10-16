@@ -28,6 +28,7 @@ urlpatterns = [
     path("courses/", include("courses.urls")),
     path("verify/<uuid:token>/", include("emails.urls")),
     path("hx/login/", email_token_login_view),
+    path("__reload__/", include("django_browser_reload.urls")),
 ]
 
 if settings.DEBUG:
