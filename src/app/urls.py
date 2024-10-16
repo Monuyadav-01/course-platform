@@ -20,12 +20,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from . import views
+from emails.views import email_token_login_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.home_view),
     path("courses/", include("courses.urls")),
     path("verify/<uuid:token>/", include("emails.urls")),
+    path("hx/login/", email_token_login_view),
 ]
 
 if settings.DEBUG:

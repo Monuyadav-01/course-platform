@@ -1,0 +1,13 @@
+<form method="POST" hx-post="/hx/login/" hx-target="this">
+  {% csrf_token %} {{ form.as_p }}
+  <button
+    type="submit"
+    class="w-full bg-blue-600 text-white text-sm font-medium py-2.5 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 transition duration-200"
+  >
+    Send Verification Email
+  </button>
+</form>
+
+{% if message %}
+<div class="text-green-600 mt-4">{{ message }}</div>
+{% endif %}
