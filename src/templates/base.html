@@ -4,14 +4,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/htmx.org@1.8.4"></script>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     {% tailwind_css %}
-    <title>{% block head_title %}base{% endblock head_title %}</title>
+
+    <title>
+      {% block head_title %}Hello World from Course Platform {% endblock head_title %}
+    </title>
   </head>
-  <body hx-headers='{"X-CSRFToken" : "{{ csrf_token }}"}'>
-    {% include 'base/navbar.html' %} 
-    {% block content %}{% endblock content %}
+  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    {% include 'base/navbar.html' %}
+
+    <div
+      class="{% if '/logout' in request.path or '/login' in request.path%} {% else %}px-4 mx-auto max-w-screen-xl{% endif %}"
+    >
+      {% block content %}
+      <h1 class="text-3xl font-bold underline">Hello world from base!</h1>
+      {% endblock content %}
+    </div>
     {% include 'base/js.html' %}
   </body>
 </html>

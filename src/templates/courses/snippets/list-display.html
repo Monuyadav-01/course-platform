@@ -9,9 +9,24 @@
     </div>
     {% endif %} {% if object.get_thumbnail %}
     <a href="{{ object.get_absolute_url }}">
-      <img class="rounded" src="{{ object.get_thumbnail }}" width="382" />
+      <img
+        class="rounded"
+        src="{{ object.get_thumbnail }}"
+        width="382"
+        alt="{{ object.title }}"
+      />
+    </a>
+    {% else %}
+    <a href="{{ object.get_absolute_url }}">
+      <img
+        class="rounded"
+        src="/static/images/default.jpg"
+        width="382"
+        alt="Default Thumbnail"
+      />
     </a>
     {% endif %}
+
     <h2
       class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
     >

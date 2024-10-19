@@ -1,7 +1,4 @@
-{% if show_form %} 
-{% if message != "" %} 
-{{ message }}
- {% else %}
+{% if show_form %} {% if message != "" %} {{ message }} {% else %}
 <form class="space-y-4" hx-post="/hx/login/" method="POST" action=".">
   {% csrf_token %} {{ form }}
   <button
@@ -11,7 +8,6 @@
     Login
   </button>
 </form>
-{% endif %} 
-{% else %}
+{% endif %} {% else %}
 <div hx-get="/hx/logout/" hx-trigger="revealed"></div>
 {% endif %}
